@@ -65,3 +65,27 @@ export DOCKER_SERVICED=/etc/systemd/system/
 #sudo mkdir /etc/systemd/system/docker.service.d
 #cd $DOCKER_DAEMON_LOC
 echo "creating DOCKER deamon.json file at /etc/docker"
+########
+sudo touch $DOCKER_DAEMON_LOC/deamon.json
+sudo chmod 755 $DOCKER_DAEMON_LOC/deamon.json
+sudo sh -c "cat > $DOCKER_DAEMON_LOC/deamon.json" <<EOF
+{
+  "hosts": ["unix:///var/run/docker.sock", "tcp://127.0.0.1:2375"]
+}
+EOF
+########
+echo "creating docker.service file for start, stop & restart"
+
+sudo touch $DOCKER_SERVICE/docker.service
+sudo chmod 755 $DOCKER_SERVICE/docker.service
+sudo sh -c "cat > $DOCKER_SERVICE/docker.service" << EOF
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd
+EOF
+###############################Creating DOCKER SERVICE#####################################################
+###############################Start DOCKER SERVICE#####################################################
+echo "#Start docker"
+sudo systemctl daemon-reload
+sudo systemctl restart docker.service
+############################### End of file#####################################################
